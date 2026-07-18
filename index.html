@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Card Quiz</title>
+  <style>
+    :root { --ink:#12233b; --navy:#172b4d; --blue:#438cff; --sky:#eaf4ff; --orange:#ff9a4c; --green:#36c58b; --red:#ff6370; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); font-family:"Pretendard","Noto Sans KR",system-ui,sans-serif; background:linear-gradient(135deg,#e4f3ff 0%,#f7fbff 48%,#fff1e5 100%); overflow-x:hidden; }
+    body::before,body::after { content:""; position:fixed; border-radius:50%; opacity:.4; z-index:-1; }
+    body::before { width:380px;height:380px;background:#88c8ff; top:-155px;left:-110px; }
+    body::after { width:300px;height:300px;background:#ffd19c; bottom:-130px;right:-75px; }
+    .app { width:min(100%,1020px); margin:auto; padding:36px 22px 52px; }
+    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
+    .brand { display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px;letter-spacing:-.8px; }
+    .globe { width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:25px;box-shadow:0 8px 16px #172b4d31; }
+    .best { background:#fff; border:1px solid #dfeafa; border-radius:99px; padding:10px 14px; font-size:13px;font-weight:800; }
+    .best b { color:var(--blue);margin-left:5px; }
+    .top { display:grid;grid-template-columns:1.2fr .8fr; gap:22px; margin-bottom:22px; }
+    .intro { padding:24px 28px; border-radius:26px; color:#fff; background:linear-gradient(120deg,#1b3158,#2e68c1); box-shadow:0 15px 30px #23528b2d; }
+    .eyebrow { font-size:12px;letter-spacing:1.5px;font-weight:800;color:#a8d7ff; }
+    h1 { margin:8px 0 6px; font-size:clamp(27px,4vw,38px);letter-spacing:-1.7px; }
+    .intro p { margin:0;color:#dceeff;font-size:14px; }
+    .stats { display:grid;grid-template-columns:repeat(3,1fr);gap:10px; }
+    .stat { background:#fff; border:1px solid #e5edf7; border-radius:20px; padding:18px 10px; text-align:center; box-shadow:0 8px 22px #2c52700c; }
+    .stat span { display:block;font-size:12px;color:#70829d;font-weight:700;margin-bottom:6px; }
+    .stat strong { font-size:25px;letter-spacing:-1px; }
+    .board { background:#fff; border:1px solid #e4edf8; border-radius:30px; padding:28px; box-shadow:0 15px 35px #23456917; }
+    .progress-row { display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:800;margin-bottom:10px;color:#526681; }
+    .progress { height:9px;background:#eaf0f7;border-radius:99px;overflow:hidden;margin-bottom:28px; }
+    #bar { height:100%;width:0;background:linear-gradient(90deg,var(--blue),#6aa8ff);border-radius:inherit;transition:width .4s; }
+    .question { text-align:center;min-height:196px;display:grid;place-items:center;align-content:center;padding:10px; }
+    .type { color:var(--blue); font-size:12px;font-weight:900;letter-spacing:1.2px; }
+    .symbol { font-size:64px;line-height:1;margin:15px 0 13px;filter:drop-shadow(0 6px 4px #1c467222); }
+    .question h2 { margin:0;font-size:clamp(21px,3vw,29px);letter-spacing:-1.2px; }
+    .choices { display:grid;grid-template-columns:repeat(2,1fr);gap:12px; }
+    .choice { border:2px solid #e3edf8;background:#fbfdff;border-radius:16px;padding:16px 17px;text-align:left;font:inherit;font-weight:800;color:var(--ink);cursor:pointer;transition:.18s; }
+    .choice:hover:not(:disabled) { transform:translateY(-2px);border-color:#8bb9ff;background:#f2f8ff; }
+    .choice:disabled { cursor:default; }
+    .choice.correct { background:#e8fbf3;border-color:var(--green);color:#16835b; }
+    .choice.wrong { background:#fff0f1;border-color:var(--red);color:#c84350; }
+    .choice i { display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:#edf3fa;color:#7890aa;font-style:normal;font-size:12px;margin-right:9px; }
+    .feedback { min-height:54px;margin-top:20px;border-radius:15px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:14px;padding:8px; }
+    .feedback.good { color:#147a56;background:#eafbf4; }.feedback.bad { color:#bd4650;background:#fff0f1; }
+    .next { border:0;border-radius:14px;background:var(--navy);color:#fff;padding:14px 25px;font:inherit;font-weight:800;cursor:pointer;display:block;margin:4px 0 0 auto;transition:.18s; }
+    .next:hover { background:#284b7e;transform:translateY(-1px); }.next.hidden { visibility:hidden; }
+    .result { text-align:center;padding:25px 6px 8px; }.result .medal {font-size:68px}.result h2 {font-size:30px;margin:8px}.result p {color:#60738e;margin:8px 0 22px}.result button {margin:auto;background:var(--blue);}
+    @media(max-width:650px) { .app{padding:22px 14px 35px}.top{grid-template-columns:1fr}.intro{padding:21px}.stats{gap:7px}.stat{padding:13px 6px}.stat strong{font-size:21px}.board{padding:20px 15px;border-radius:24px}.choices{grid-template-columns:1fr}.question{min-height:180px}.symbol{font-size:57px} }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><div class="brand"><div class="globe">🌍</div>World Card Quiz</div><div class="best">최고 점수 <b id="best">0</b></div></header>
+    <section class="top"><div class="intro"><div class="eyebrow">TRAVEL THE WORLD, ONE CARD AT A TIME</div><h1>전 세계를 퀴즈로 여행해요</h1><p>국기, 수도, 랜드마크를 맞히며 세계 지식을 넓혀보세요.</p></div><div class="stats"><div class="stat"><span>점수</span><strong id="score">0</strong></div><div class="stat"><span>연속 정답</span><strong id="streak">0</strong></div><div class="stat"><span>정답률</span><strong id="rate">0%</strong></div></div></section>
+    <section class="board" id="game">
+      <div class="progress-row"><span id="round">문제 1 / 10</span><span id="category">세계 탐험</span></div><div class="progress"><div id="bar"></div></div>
+      <div class="question"><div class="type" id="type"></div><div class="symbol" id="symbol"></div><h2 id="prompt"></h2></div>
+      <div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><button class="next hidden" id="next">다음 문제 →</button>
+    </section>
+  </main>
+  <script>
+    const questions = [
+      {t:'국기 퀴즈',s:'🇰🇷',q:'이 국기는 어느 나라의 것일까요?',a:'대한민국',o:['대한민국','일본','중국','태국'],fact:'태극기는 음양과 우주의 조화를 상징해요.'},
+      {t:'수도 퀴즈',s:'🗼',q:'프랑스의 수도는 어디일까요?',a:'파리',o:['리옹','파리','마르세유','니스'],fact:'파리는 센강을 따라 형성된 프랑스의 수도예요.'},
+      {t:'랜드마크 퀴즈',s:'🗽',q:'자유의 여신상이 있는 도시는?',a:'뉴욕',o:['보스턴','시카고','뉴욕','워싱턴 D.C.'],fact:'자유의 여신상은 프랑스가 미국에 선물했어요.'},
+      {t:'국기 퀴즈',s:'🇧🇷',q:'이 국기는 어느 나라의 것일까요?',a:'브라질',o:['아르헨티나','브라질','콜롬비아','멕시코'],fact:'브라질은 남아메리카에서 가장 큰 나라예요.'},
+      {t:'수도 퀴즈',s:'🕌',q:'이집트의 수도는 어디일까요?',a:'카이로',o:['알렉산드리아','카이로','룩소르','아스완'],fact:'카이로는 나일강 근처에 자리한 거대 도시예요.'},
+      {t:'랜드마크 퀴즈',s:'🗼',q:'에펠탑이 있는 도시는?',a:'파리',o:['로마','런던','파리','베를린'],fact:'에펠탑은 1889년 파리 만국박람회를 위해 세워졌어요.'},
+      {t:'국기 퀴즈',s:'🇨🇦',q:'단풍잎 국기로 유명한 나라는?',a:'캐나다',o:['캐나다','미국','호주','뉴질랜드'],fact:'캐나다 국기의 중앙에는 11개 꼭짓점의 단풍잎이 있어요.'},
+      {t:'수도 퀴즈',s:'🌸',q:'일본의 수도는 어디일까요?',a:'도쿄',o:['오사카','교토','도쿄','삿포로'],fact:'도쿄는 세계에서 가장 큰 대도시권 중 하나예요.'},
+      {t:'랜드마크 퀴즈',s:'🏛️',q:'콜로세움이 있는 도시는?',a:'로마',o:['아테네','로마','밀라노','베네치아'],fact:'콜로세움은 고대 로마 시대의 거대한 원형 경기장이에요.'},
+      {t:'국기 퀴즈',s:'🇦🇺',q:'이 국기는 어느 나라의 것일까요?',a:'호주',o:['호주','영국','뉴질랜드','남아프리카공화국'],fact:'호주는 남반구에 위치한 섬 대륙 국가예요.'},
+      {t:'수도 퀴즈',s:'🌮',q:'멕시코의 수도는 어디일까요?',a:'멕시코시티',o:['과달라하라','몬테레이','멕시코시티','칸쿤'],fact:'멕시코시티는 고대 아즈텍의 도시 위에 세워졌어요.'},
+      {t:'랜드마크 퀴즈',s:'🕌',q:'타지마할이 있는 나라는?',a:'인도',o:['인도','파키스탄','터키','이란'],fact:'타지마할은 사랑을 기리기 위해 지어진 흰 대리석 영묘예요.'}
+    ];
+    let deck=[], index=0, score=0, streak=0, correct=0, locked=false;
+    const $=id=>document.getElementById(id); const shuffle=a=>[...a].sort(()=>Math.random()-.5);
+    function start(){ deck=shuffle(questions).slice(0,10);index=score=streak=correct=0; $('game').innerHTML=`<div class="progress-row"><span id="round"></span><span id="category">세계 탐험</span></div><div class="progress"><div id="bar"></div></div><div class="question"><div class="type" id="type"></div><div class="symbol" id="symbol"></div><h2 id="prompt"></h2></div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><button class="next hidden" id="next">다음 문제 →</button>`; $('next').onclick=()=>{index++;render()};render(); }
+    function update(){ $('score').textContent=score;$('streak').textContent=streak;$('rate').textContent=Math.round(correct/(index+(locked?1:0)||1)*100)+'%'; }
+    function render(){ if(index===deck.length){end();return} locked=false;const d=deck[index];$('round').textContent=`문제 ${index+1} / ${deck.length}`;$('bar').style.width=`${index/deck.length*100}%`;$('type').textContent=d.t;$('symbol').textContent=d.s;$('prompt').textContent=d.q;$('feedback').className='feedback';$('feedback').textContent='';$('next').classList.add('hidden');$('choices').innerHTML='';shuffle(d.o).forEach((v,i)=>{const b=document.createElement('button');b.className='choice';b.innerHTML=`<i>${'ABCD'[i]}</i>${v}`;b.onclick=()=>answer(v,b);$('choices').append(b)});update(); }
+    function answer(value,button){if(locked)return;locked=true;const d=deck[index], ok=value===d.a;document.querySelectorAll('.choice').forEach(b=>{b.disabled=true;if(b.textContent.includes(d.a))b.classList.add('correct')});if(ok){score+=100+streak*20;streak++;correct++;button.classList.add('correct');$('feedback').className='feedback good';$('feedback').textContent=`정답! ${d.fact}`}else{streak=0;button.classList.add('wrong');$('feedback').className='feedback bad';$('feedback').textContent=`아쉬워요. 정답은 ${d.a}! ${d.fact}`} $('next').classList.remove('hidden');$('bar').style.width=`${(index+1)/deck.length*100}%`;update(); }
+    function end(){const best=Number(localStorage.worldQuizBest||0);if(score>best)localStorage.worldQuizBest=score;$('best').textContent=Math.max(best,score);$('game').innerHTML=`<div class="result"><div class="medal">${correct>=8?'🏆':correct>=5?'🌍':'🧭'}</div><h2>${correct} / ${deck.length} 정답!</h2><p>${score}점을 획득했어요. ${correct>=8?'세계 탐험가 인정!':'다시 도전해서 더 많은 나라를 만나보세요.'}</p><button class="next" onclick="start()">다시 여행하기 ↻</button></div>`;}
+    $('best').textContent=localStorage.worldQuizBest||0;start();
+  </script>
+</body>
+</html>

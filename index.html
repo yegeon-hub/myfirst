@@ -6,16 +6,19 @@
   <title>World Atlas Quest</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="survival.css">
+  <link rel="stylesheet" href="campaign.css">
 </head>
 <body>
   <main class="app">
     <nav><b>🌍 WORLD ATLAS QUEST</b><div><label>화면 <select id="uiLang"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option></select></label><button id="changeName">✎</button></div></nav>
     <section class="hero"><div><small id="tag"></small><h1 id="title"></h1><p id="intro"></p><button id="startHero">▶ 퀘스트 시작</button></div></section>
-    <section class="stats"><article>⚡<small id="xpLabel"></small><b id="xp">0 XP</b></article><article>🔥<small id="streakLabel"></small><b id="streak">0</b></article><article>🏆<small id="bestLabel"></small><b id="best">0</b></article><article>🃏<small id="cardLabel"></small><b id="cards">0 / 10,000</b></article></section>
+    <section class="stats"><article>⚡<small id="xpLabel"></small><b id="xp">0 XP</b></article><article>🔥<small id="streakLabel"></small><b id="streak">0</b></article><article>🏆<small id="bestLabel"></small><b id="best">0</b></article><article>🃏<small id="cardLabel"></small><b id="cards">0 / 1,000</b></article></section>
+    <section class="mission"><div><small>CAMPAIGN MAP</small><h2 id="missionTitle">시간의 길 · 1장</h2><p id="missionText">고대 문명 관문을 향해 이동 중</p></div><div class="route" id="route"></div></section>
     <section class="board" id="game"></section>
     <section class="ranking"><h2 id="rankingTitle"></h2><div id="ranks"></div><button id="share">↗ 결과 자랑하기</button></section>
   </main>
   <div class="modal" id="modal"><div><span>🧭</span><h2 id="modalTitle"></h2><p id="modalText"></p><input id="name" maxlength="16"><button id="go"></button></div></div>
   <script src="app.js"></script>
+  <script src="campaign.js"></script>
 </body>
 </html>

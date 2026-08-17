@@ -17,7 +17,8 @@ const HISTORY_I18N = [
   [['프랑스 혁명','French Revolution','フランス革命','法国大革命'],['프랑스','France','フランス','法国'],['파리','Paris','パリ','巴黎'],['자유와 평등을 외치며 왕정을 바꿨다','People called for liberty and equality.','自由と平等を求めて王政を変えた。','人们呼吁自由和平等，改变了君主制。'],['1789년','1789','1789年','1789年']],
   [['유엔','United Nations','国際連合','联合国'],['세계','the world','世界','世界'],['뉴욕','New York','ニューヨーク','纽约'],['나라들이 평화를 위해 함께 만들었다','Countries created it to work for peace.','国々が平和のために一緒に作った。','各国为和平共同建立了它。'],['1945년','1945','1945年','1945年']],
   [['달 착륙','Moon landing','月面着陸','登月'],['미국','United States','アメリカ','美国'],['달','the Moon','月','月球'],['사람이 처음 달 표면을 걸었다','Humans first walked on the Moon.','人類が初めて月面を歩いた。','人类首次在月球表面行走。'],['1969년','1969','1969年','1969年']],
-  [['베를린 장벽 붕괴','Fall of the Berlin Wall','ベルリンの壁崩壊','柏林墙倒塌'],['독일','Germany','ドイツ','德国'],['베를린','Berlin','ベルリン','柏林'],['독일 통일의 길이 열렸다','It opened the way to German reunification.','ドイツ統一への道が開かれた。','它为德国统一打开了道路。'],['1989년','1989','1989年','1989年']]
+  [['베를린 장벽 붕괴','Fall of the Berlin Wall','ベルリンの壁崩壊','柏林墙倒塌'],['독일','Germany','ドイツ','德国'],['베를린','Berlin','ベルリン','柏林'],['독일 통일의 길이 열렸다','It opened the way to German reunification.','ドイツ統一への道が開かれた。','它为德国统一打开了道路。'],['1989년','1989','1989年','1989年']],
+  [['코로나19','COVID-19','COVID-19','新冠肺炎'],['세계','the world','世界','世界'],['전 세계','the whole world','世界中','全世界'],['보건과 서로 돕는 일의 중요성을 알렸다','It showed why health and helping one another matter.','健康と助け合いの大切さを教えた。','它让人们认识到健康和互相帮助的重要性。'],['2020년','2020','2020年','2020年']]
 ];
 const LANGUAGE_INDEX={ko:0,en:1,ja:2,zh:3};
 function historyQuestion(raw, language, type) {
@@ -28,7 +29,7 @@ function historyQuestion(raw, language, type) {
 make=function(id){
   const raw=HISTORY_I18N[(id*19+7)%HISTORY_I18N.length],type=id%4,{item,q}=historyQuestion(raw,ui,type);
   const answer=item[type+1],pool=HISTORY_I18N.map(x=>x[type+1][LANGUAGE_INDEX[ui]]);
-  return {id,h:item,raw,type,ans:answer,q,options:shuffle([answer,...shuffle(pool.filter(x=>x!==answer)).slice(0,3)])};
+  return {id,h:item,raw,type,ans:answer,q,covid:item[0]==='코로나19'||item[0]==='COVID-19'||item[0]==='新冠肺炎',options:shuffle([answer,...shuffle(pool.filter(x=>x!==answer)).slice(0,3)])};
 };
 speak=function(){
   const language=$('voice').value,{q}=historyQuestion(current.raw,language,current.type);
